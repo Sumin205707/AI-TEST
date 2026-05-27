@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DKU AI Horizon 2026 - 단국대학교 AI 워크샵</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dku: {
+              navy: '#002F6C',   /* 단국대 대표 청색 느낌 */
+              blue: '#005bac',   /* 밝은 블루 포인트 */
+              dark: '#0B132B',   /* 메인 배경 다크 네이비 */
+              card: '#1C2541'    /* 카드 배경 */
+            },
+            neon: {
+              cyan: '#00F0FF',
+              purple: '#A124FF'
+            }
+          },
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    
+    /* 네온 텍스트 효과 */
+    .neon-text {
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
+    }
+    .neon-border {
+      box-shadow: 0 0 15px rgba(161, 36, 255, 0.3);
+    }
+    /* 스크롤바 커스텀 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B132B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1C2541;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #005bac;
+    }
+  </style>
+</head>
+<body class="bg-dku-dark text-slate-100 font-sans selection:bg-neon-cyan selection:text-dku-dark">
+
+  <!-- 내비게이션 바 -->
+  <nav class="sticky top-0 z-50 bg-dku-dark/80 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- 로고 -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-dku-blue to-neon-purple rounded-xl flex items-center justify-center font-black text-xl text-white tracking-wider">
+            DKU
+          </div>
+          <div>
+            <span class="font-bold text-lg tracking-tight block text-white">AI Horizon 2026</span>
+            <span class="text-xs text-slate-400 block -mt-1">단국대학교 AI 워크샵</span>
+          </div>
+        </div>
+        
+        <!-- 데스크톱 메뉴 -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#about" class="text-slate-300 hover:text-neon-cyan transition-colors text-sm font-medium">소개</a>
+          <a href="#speakers" class="text-slate-300 hover:text-neon-cyan transition-colors text-sm font-medium">연사 라인업</a>
+          <a href="#program" class="text-slate-300 hover:text-neon-cyan transition-colors text-sm font-medium">프로그램</a>
+          <a href="#faq" class="text-slate-300 hover:text-neon-cyan transition-colors text-sm font-medium">자주 묻는 질문</a>
+          <a href="#register" class="bg-gradient-to-r from-dku-blue to-neon-purple text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-all transform hover:scale-105 neon-border">
+            참가 신청하기
+          </a>
+        </div>
+
+        <!-- 모바일 메뉴 버튼 -->
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="p-2 text-slate-400 hover:text-white focus:outline-none">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 메뉴 (토글 식) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-dku-dark/95 border-b border-slate-800 px-4 pt-2 pb-4 space-y-3">
+      <a href="#about" class="block text-slate-300 hover:text-neon-cyan transition-colors py-2 text-base font-medium">소개</a>
+      <a href="#speakers" class="block text-slate-300 hover:text-neon-cyan transition-colors py-2 text-base font-medium">연사 라인업</a>
+      <a href="#program" class="block text-slate-300 hover:text-neon-cyan transition-colors py-2 text-base font-medium">프로그램</a>
+      <a href="#faq" class="block text-slate-300 hover:text-neon-cyan transition-colors py-2 text-base font-medium">자주 묻는 질문</a>
+      <a href="#register" class="block text-center bg-gradient-to-r from-dku-blue to-neon-purple text-white px-5 py-3 rounded-lg text-base font-semibold">
+        참가 신청하기
+      </a>
+    </div>
+  </nav>
+
+  <!-- 히어로 섹션 -->
+  <header class="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-32 flex items-center">
+    <!-- 배경 글로우 데코 -->
+    <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-dku-blue/25 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[400px] h-[400px] bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- 텍스트 정보 -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center space-x-2 bg-dku-blue/20 border border-dku-blue/50 px-3.5 py-1.5 rounded-full text-xs font-semibold text-neon-cyan">
+            <span class="w-2 h-2 rounded-full bg-neon-cyan animate-pulse"></span>
+            <span>2026 단국대학교 혁신인재 워크샵</span>
+          </div>
+          
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white">
+            인공지능의 내일,<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">단국에서 마주하다</span>
+          </h1>
+          
+          <p class="text-base sm:text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            단국대학교가 제안하는 가상의 대규모 미래 핵심 인재 양성 프로젝트. 생성형 AI 트렌드 분석부터 실무 개발, 그리고 윤리까지 한눈에 관통하는 심도 깊은 하루를 선물합니다.
+          </p>
+
+          <!-- 핵심 메타 정보 -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 max-w-lg mx-auto lg:mx-0">
+            <div class="bg-dku-card/60 p-4 rounded-xl border border-slate-800">
+              <div class="text-xs text-slate-400 mb-1">일시</div>
+              <div class="text-sm sm:text-base font-bold text-white">2026. 06. 26 (금)</div>
+            </div>
+            <div class="bg-dku-card/60 p-4 rounded-xl border border-slate-800">
+              <div class="text-xs text-slate-400 mb-1">장소</div>
+              <div class="text-sm sm:text-base font-bold text-white">죽전캠퍼스 혜당관</div>
+            </div>
+            <div class="bg-dku-card/60 p-4 rounded-xl border border-slate-800 col-span-2 sm:col-span-1">
+              <div class="text-xs text-slate-400 mb-1">참가비</div>
+              <div class="text-sm sm:text-base font-bold text-neon-cyan">전액 무료 (사전 등록)</div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4 pt-2">
+            <a href="#register" class="w-full sm:w-auto text-center bg-gradient-to-r from-dku-blue to-neon-purple text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+              지금 바로 무료 사전등록
+            </a>
+            <a href="#program" class="w-full sm:w-auto text-center border border-slate-700 hover:border-slate-500 hover:bg-slate-800/40 text-slate-300 px-8 py-4 rounded-xl font-bold text-lg transition-all">
+              상세 일정표 보기
+            </a>
+          </div>
+        </div>
+
+        <!-- 일러스트/데모 카드 -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-[400px] aspect-square bg-gradient-to-tr from-dku-card to-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl flex flex-col justify-between neon-border overflow-hidden group">
+            <!-- 그리드 패턴 배경 -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            
+            <div class="relative z-10 flex justify-between items-start">
+              <span class="text-xs font-mono text-neon-cyan tracking-widest">DKU_AI_STUDIO_2026</span>
+              <span class="px-2.5 py-1 rounded bg-red-500/20 text-red-400 font-bold text-[10px] tracking-wider animate-pulse flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> LIVE STREAMING
+              </span>
+            </div>
+
+            <!-- 미래지향적인 원형 비주얼 그래픽 -->
+            <div class="relative z-10 my-6 flex justify-center items-center">
+              <div class="w-40 h-40 rounded-full border-4 border-dashed border-dku-blue/40 flex items-center justify-center animate-[spin_40s_linear_infinite]">
+                <div class="w-32 h-32 rounded-full border border-neon-cyan/40 flex items-center justify-center animate-[spin_20s_linear_infinite_reverse]">
+                  <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-dku-blue to-neon-purple opacity-80 flex items-center justify-center">
+                    <i data-lucide="cpu" class="w-10 h-10 text-white animate-bounce"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative z-10 space-y-2 text-center">
+              <div class="text-xs text-slate-400">현재 온라인 사전 예약</div>
+              <div class="text-3xl font-extrabold text-white" id="live-counter">428명</div>
+              <div class="text-[11px] text-slate-500">실시간으로 신청자가 접수되고 있습니다!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 소개 및 강점 섹션 -->
+  <section id="about" class="py-20 bg-slate-950/60 border-t border-b border-slate-900 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h2 class="text-sm font-bold tracking-widest text-dku-blue uppercase">ABOUT WORKSHOP</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-white">왜 DKU AI Horizon 2026 인가?</p>
+        <p class="text-slate-400">대학생, 연구원, 그리고 일반인까지 모두가 아우를 수 있도록 학문적 이론과 실질적인 기술 트렌드를 알차게 담아 설계했습니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- 강점 카드 1 -->
+        <div class="bg-dku-card/40 p-8 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all hover:-translate-y-1">
+          <div class="w-12 h-12 bg-dku-blue/10 rounded-xl flex items-center justify-center mb-6 text-neon-cyan">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">최신 생성형 AI 트렌드</h3>
+          <p class="text-slate-400 leading-relaxed text-sm">
+            ChatGPT, Midjourney부터 최신 대형언어모델(LLM) 멀티모달 기술의 동향을 단국대학교 석학 및 저명한 IT 업계 연사에게 생생하게 전달받습니다.
+          </p>
+        </div>
+
+        <!-- 강점 카드 2 -->
+        <div class="bg-dku-card/40 p-8 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all hover:-translate-y-1">
+          <div class="w-12 h-12 bg-neon-purple/10 rounded-xl flex items-center justify-center mb-6 text-neon-purple">
+            <i data-lucide="terminal" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">실전 핸즈온 튜토리얼</h3>
+          <p class="text-slate-400 leading-relaxed text-sm">
+            단순히 듣기만 하는 강연이 아닙니다. 오후 세션을 통해 자신만의 AI 챗봇 빌더와 API 파이프라인을 직접 구축해 보는 실습 중심 워크샵이 준비되어 있습니다.
+          </p>
+        </div>
+
+        <!-- 강점 카드 3 -->
+        <div class="bg-dku-card/40 p-8 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all hover:-translate-y-1">
+          <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mb-6 text-green-400">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">네트워킹 & 커리어 가이드</h3>
+          <p class="text-slate-400 leading-relaxed text-sm">
+            현업 연구원들과 빅테크 개발자 멘토들이 세션 후 직접 네트워킹을 통해 커리어 상담을 진행합니다. 여러분의 AI 개발자/기획자 커리어를 점검하세요.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 연사 소개 섹션 -->
+  <section id="speakers" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h2 class="text-sm font-bold tracking-widest text-dku-blue uppercase">SPEAKERS</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-white">최정상급 초청 연사 라인업</p>
+        <p class="text-slate-400">학계의 거장부터 국내외 최전선 빅테크 기업에서 활약 중인 실무진까지 한자리에 모였습니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- 연사 1 -->
+        <div class="bg-dku-card rounded-2xl overflow-hidden border border-slate-800 group hover:border-neon-cyan transition-all">
+          <div class="h-64 bg-slate-800 relative flex items-center justify-center">
+            <!-- 가상 프로필 이미지 대체 (SVG 스케치 아웃라인) -->
+            <svg class="w-24 h-24 text-slate-600 group-hover:text-neon-cyan transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+            <div class="absolute bottom-4 left-4 bg-dku-navy px-3 py-1 rounded text-xs text-white font-semibold">키노트 강연자</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-white">김단국 교수</h4>
+            <p class="text-xs text-neon-cyan mb-3">단국대학교 AI융합대학원</p>
+            <p class="text-sm text-slate-400">
+              "초거대 LLM 시대의 대학 교육 혁신과 연구 생태계"
+            </p>
+          </div>
+        </div>
+
+        <!-- 연사 2 -->
+        <div class="bg-dku-card rounded-2xl overflow-hidden border border-slate-800 group hover:border-neon-cyan transition-all">
+          <div class="h-64 bg-slate-800 relative flex items-center justify-center">
+            <svg class="w-24 h-24 text-slate-600 group-hover:text-neon-cyan transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+            <div class="absolute bottom-4 left-4 bg-purple-900 px-3 py-1 rounded text-xs text-white font-semibold">빅테크 리더</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-white">이지원 수석</h4>
+            <p class="text-xs text-neon-purple mb-3">Naver CLOVA AI Lab</p>
+            <p class="text-sm text-slate-400">
+              "HyperCLOVA X 활용 사례 및 비즈니스 전환 가이드"
+            </p>
+          </div>
+        </div>
+
+        <!-- 연사 3 -->
+        <div class="bg-dku-card rounded-2xl overflow-hidden border border-slate-800 group hover:border-neon-cyan transition-all">
+          <div class="h-64 bg-slate-800 relative flex items-center justify-center">
+            <svg class="w-24 h-24 text-slate-600 group-hover:text-neon-cyan transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+            <div class="absolute bottom-4 left-4 bg-cyan-900 px-3 py-1 rounded text-xs text-white font-semibold">AI 창업가</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-white">박지우 대표</h4>
+            <p class="text-xs text-neon-cyan mb-3">가상 AI 스타트업 'Aegis AI'</p>
+            <p class="text-sm text-slate-400">
+              "AI 시대의 유니콘 스타트업 창업 전략과 시장 탐색"
+            </p>
+          </div>
+        </div>
+
+        <!-- 연사 4 -->
+        <div class="bg-dku-card rounded-2xl overflow-hidden border border-slate-800 group hover:border-neon-cyan transition-all">
+          <div class="h-64 bg-slate-800 relative flex items-center justify-center">
+            <svg class="w-24 h-24 text-slate-600 group-hover:text-neon-cyan transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+            <div class="absolute bottom-4 left-4 bg-green-900 px-3 py-1 rounded text-xs text-white font-semibold">오픈소스 커미터</div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-white">홍길동 개발자</h4>
+            <p class="text-xs text-green-400 mb-3">빅테크 AI 오픈소스 기여자</p>
+            <p class="text-sm text-slate-400">
+              "Hugging Face 라이브러리를 활용한 초고속 AI 파이프라인 개발"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 프로그램 일정표 섹션 -->
+  <section id="program" class="py-20 bg-slate-950/60 border-t border-b border-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h2 class="text-sm font-bold tracking-widest text-dku-blue uppercase">TIMELINE</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-white">워크샵 프로그램 일정표</p>
+        <p class="text-slate-400">알찬 지식 습득부터 실습까지 탄탄하게 짜여진 하루의 로드맵입니다.</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <!-- 타임라인 컨테이너 -->
+        <div class="relative border-l border-slate-800 ml-4 md:ml-32 space-y-12">
+          
+          <!-- 세션 1 -->
+          <div class="relative">
+            <!-- 데스크톱용 고정 시간 좌측 배치 -->
+            <div class="hidden md:block absolute -left-32 top-0.5 text-right w-24">
+              <span class="text-sm font-bold text-neon-cyan">09:30 - 10:00</span>
+              <span class="block text-xs text-slate-500">등록 및 오리엔테이션</span>
+            </div>
+            <!-- 마커 도트 -->
+            <span class="absolute -left-1.5 top-2.5 flex h-3 w-3 items-center justify-center rounded-full bg-neon-cyan">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-cyan opacity-75"></span>
+            </span>
+            <div class="ml-6 bg-dku-card/50 p-6 rounded-2xl border border-slate-800">
+              <span class="md:hidden inline-block text-xs font-bold text-neon-cyan mb-2">09:30 - 10:00</span>
+              <h4 class="text-lg font-bold text-white mb-2">웰컴 리셉션 & 패키지 수령</h4>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                워크샵 웰컴 기프트(친환경 에코백, 다이어리, AI 입문 가이드북)를 수령하고 단국대 혜당관 본당에서 자리를 배정받습니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 세션 2 -->
+          <div class="relative">
+            <div class="hidden md:block absolute -left-32 top-0.5 text-right w-24">
+              <span class="text-sm font-bold text-neon-cyan">10:00 - 11:30</span>
+              <span class="block text-xs text-slate-500">오전 키노트</span>
+            </div>
+            <span class="absolute -left-1.5 top-2.5 flex h-3 w-3 rounded-full bg-dku-blue"></span>
+            <div class="ml-6 bg-dku-card/50 p-6 rounded-2xl border border-slate-800">
+              <span class="md:hidden inline-block text-xs font-bold text-neon-cyan mb-2">10:00 - 11:30</span>
+              <h4 class="text-lg font-bold text-white mb-2">키노트: AI로 디자인하는 인류의 넥스트 스텝</h4>
+              <p class="text-sm text-slate-400 leading-relaxed mb-3">
+                단국대학교 김단국 교수와 네이버 CLOVA AI 랩 이지원 수석이 진행하는 혁신적인 기조연설입니다.
+              </p>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-dku-blue/30 text-neon-cyan text-xs">본관 홀</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-xs">질의응답 포함</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 세션 3 -->
+          <div class="relative">
+            <div class="hidden md:block absolute -left-32 top-0.5 text-right w-24">
+              <span class="text-sm font-bold text-neon-cyan">11:30 - 13:00</span>
+              <span class="block text-xs text-slate-500">중식 및 휴식</span>
+            </div>
+            <span class="absolute -left-1.5 top-2.5 flex h-3 w-3 rounded-full bg-slate-700"></span>
+            <div class="ml-6 bg-dku-card/50 p-6 rounded-2xl border border-slate-800 border-dashed">
+              <span class="md:hidden inline-block text-xs font-bold text-neon-cyan mb-2">11:30 - 13:00</span>
+              <h4 class="text-lg font-bold text-white mb-2">네트워킹 런치 타임 (케이터링 제공)</h4>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                혜당관 2층 로비에서 수제 샌드위치 박스 및 비건 패키지가 무료 제공됩니다. 연사들과 자유롭게 만나 질문을 나눌 수 있는 프리미엄 아워입니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 세션 4 -->
+          <div class="relative">
+            <div class="hidden md:block absolute -left-32 top-0.5 text-right w-24">
+              <span class="text-sm font-bold text-neon-cyan">13:00 - 15:30</span>
+              <span class="block text-xs text-slate-500">오후 핸즈온</span>
+            </div>
+            <span class="absolute -left-1.5 top-2.5 flex h-3 w-3 rounded-full bg-neon-purple"></span>
+            <div class="ml-6 bg-dku-card/50 p-6 rounded-2xl border border-slate-800">
+              <span class="md:hidden inline-block text-xs font-bold text-neon-cyan mb-2">13:00 - 15:30</span>
+              <h4 class="text-lg font-bold text-white mb-2">트랙A (실습): Low-Code로 만드는 초고속 AI 어플리케이션</h4>
+              <p class="text-sm text-slate-400 leading-relaxed mb-3">
+                개발 경험이 부족해도 괜찮습니다! 노코딩 툴과 API 조합만으로 실제 배포가 가능한 웹 챗봇과 이미지 생성 자동화 비서 시스템을 구축합니다. (개인 노트북 필수 지참)
+              </p>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-neon-purple/20 text-neon-purple text-xs">창조관 PC실습실</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-xs">정원 선착순 150명</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 세션 5 -->
+          <div class="relative">
+            <div class="hidden md:block absolute -left-32 top-0.5 text-right w-24">
+              <span class="text-sm font-bold text-neon-cyan">15:30 - 17:00</span>
+              <span class="block text-xs text-slate-500">커리어 토크</span>
+            </div>
+            <span class="absolute -left-1.5 top-2.5 flex h-3 w-3 rounded-full bg-dku-blue"></span>
+            <div class="ml-6 bg-dku-card/50 p-6 rounded-2xl border border-slate-800">
+              <span class="md:hidden inline-block text-xs font-bold text-neon-cyan mb-2">15:30 - 17:00</span>
+              <h4 class="text-lg font-bold text-white mb-2">AI 스타트업 패널 토크 & 질의응답</h4>
+              <p class="text-sm text-slate-400 leading-relaxed mb-3">
+                현재 AI 비즈니스를 주도하는 스타트업 대표들과 시니어 개발자들이 패널로 참여해 실무에서 겪은 생생한 시행착오와 성장 팁을 나눕니다.
+              </p>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-dku-blue/30 text-neon-cyan text-xs">본관 홀</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 가상의 후기 / 파트너 로고 영역 -->
+  <section class="py-16 text-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-400">주최 및 협력 기관</h3>
+      <div class="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60">
+        <div class="font-extrabold text-lg text-slate-300">단국대학교 AI융합연구원</div>
+        <div class="font-extrabold text-lg text-slate-300">소프트웨어중심대학사업단</div>
+        <div class="font-extrabold text-lg text-slate-300">단국대학교 LINC 3.0</div>
+        <div class="font-extrabold text-lg text-slate-300">혁신공유대학 사업단</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 자주 묻는 질문 FAQ -->
+  <section id="faq" class="py-20 bg-slate-950/40 border-t border-slate-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h2 class="text-sm font-bold tracking-widest text-dku-blue uppercase">FAQ</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-white">무엇이든 물어보세요</p>
+        <p class="text-slate-400">워크샵 참가 전에 가장 많이 질문주시는 내용들을 엄선했습니다.</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- 아코디언 1 -->
+        <div class="bg-dku-card/60 border border-slate-800 rounded-xl overflow-hidden">
+          <button class="w-full text-left p-6 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+            <span class="font-bold text-white text-base md:text-lg">단국대학교 학생이 아닌데, 타 대학생이나 직장인도 참가 가능한가요?</span>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transform transition-transform"></i>
+          </button>
+          <div class="max-h-0 overflow-hidden transition-all duration-300 bg-slate-900/40">
+            <p class="p-6 text-sm md:text-base text-slate-300 leading-relaxed">
+              네, 가능합니다! 본 워크샵은 오픈형 혁신 세션으로 기획되어, 단국대학교 학부생/대학원생 외에도 AI 분야에 열정을 가진 누구나 참가신청을 통해 참관 및 실습이 가능합니다. (단, 오프라인 좌석 수 제한으로 인하여 조기 마감될 수 있습니다.)
+            </p>
+          </div>
+        </div>
+
+        <!-- 아코디언 2 -->
+        <div class="bg-dku-card/60 border border-slate-800 rounded-xl overflow-hidden">
+          <button class="w-full text-left p-6 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+            <span class="font-bold text-white text-base md:text-lg">오후 실습을 하려면 코딩 실력이 많이 필요할까요?</span>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transform transition-transform"></i>
+          </button>
+          <div class="max-h-0 overflow-hidden transition-all duration-300 bg-slate-900/40">
+            <p class="p-6 text-sm md:text-base text-slate-300 leading-relaxed">
+              아닙니다. 오후 'Low-Code 개발 세션'은 복잡한 문법 코딩보다는 프롬프트 엔지니어링, 블록형 API 조립, 클라우드 빌더 중심의 입문 난이도로 세팅되어 있습니다. 기초 컴퓨터 활용 능력과 노트북만 지참해 주시면 조교의 실시간 밀착 가이드를 받아 완성도 높게 프로젝트를 끝낼 수 있습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- 아코디언 3 -->
+        <div class="bg-dku-card/60 border border-slate-800 rounded-xl overflow-hidden">
+          <button class="w-full text-left p-6 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+            <span class="font-bold text-white text-base md:text-lg">준비해야 할 개인 지참물은 무엇인가요?</span>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transform transition-transform"></i>
+          </button>
+          <div class="max-h-0 overflow-hidden transition-all duration-300 bg-slate-900/40">
+            <p class="p-6 text-sm md:text-base text-slate-300 leading-relaxed">
+              오후 트랙 A, B 공통으로 개인 실습 노트북 및 충전 어댑터 지참이 꼭 필요합니다. 실무에서 바로 작동하는 본인만의 AI 환경 구축을 위한 권장 사항입니다. 점심 식사와 기본 필기도구 세트는 주최 측에서 전량 무료 지원합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 등록 신청 폼 섹션 -->
+  <section id="register" class="py-24 relative overflow-hidden bg-gradient-to-b from-dku-dark to-slate-950">
+    <!-- 배경 글로우 -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-dku-blue/15 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="bg-dku-card/70 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-xl">
+        <div class="text-center space-y-3 mb-10">
+          <div class="inline-block bg-neon-cyan/10 border border-neon-cyan/20 px-3 py-1 rounded-full text-xs text-neon-cyan font-semibold">참가자 무료 혜택 전원 증정</div>
+          <h3 class="text-3xl font-extrabold text-white">무료 사전 등록 신청</h3>
+          <p class="text-slate-400 text-sm">기획안에 포함된 가상의 워크샵 신청 폼입니다. 본인의 정보로 신청 테스트를 진행해 보세요.</p>
+        </div>
+
+        <form id="apply-form" onsubmit="submitForm(event)" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 이름 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300" for="name">성함 *</label>
+              <input type="text" id="name" required placeholder="홍길동" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all">
+            </div>
+
+            <!-- 이메일 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300" for="email">이메일 주소 *</label>
+              <input type="email" id="email" required placeholder="gildong@dankook.ac.kr" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 연락처 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300" for="phone">연락처 *</label>
+              <input type="tel" id="phone" required placeholder="010-1234-5678" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all">
+            </div>
+
+            <!-- 소속 분류 -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300" for="group">소속 구분 *</label>
+              <select id="group" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all">
+                <option value="dku-student">단국대학교 학부생/대학원생</option>
+                <option value="other-student">타 대학(원)생</option>
+                <option value="industry">AI 유관 현업 실무자 / 연구원</option>
+                <option value="general">기타 (인공지능에 관심이 있는 일반인)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 실습 트랙 선택 -->
+          <div class="space-y-3">
+            <span class="block text-sm font-semibold text-slate-300">오후 참여 트랙 선택 *</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <label class="relative flex p-4 rounded-xl border border-slate-700 bg-slate-900/50 cursor-pointer select-none hover:border-dku-blue transition-all" for="track-a">
+                <input type="radio" name="track" id="track-a" checked value="trackA" class="mt-1 mr-3 accent-neon-cyan">
+                <div>
+                  <span class="block font-bold text-white text-sm">트랙 A: 로우코드 실습</span>
+                  <span class="block text-xs text-slate-400 mt-1">간편한 API 챗봇 빌딩 실습 위주</span>
+                </div>
+              </label>
+
+              <label class="relative flex p-4 rounded-xl border border-slate-700 bg-slate-900/50 cursor-pointer select-none hover:border-dku-blue transition-all" for="track-b">
+                <input type="radio" name="track" id="track-b" value="trackB" class="mt-1 mr-3 accent-neon-cyan">
+                <div>
+                  <span class="block font-bold text-white text-sm">트랙 B: 딥러닝 응용 세션</span>
+                  <span class="block text-xs text-slate-400 mt-1">PyTorch 기반의 미세조정(Fine-Tuning) 입문</span>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- 개인정보 처리동의 -->
+          <div class="flex items-start">
+            <input type="checkbox" id="privacy" required class="mt-1 mr-3 accent-neon-cyan">
+            <label for="privacy" class="text-xs text-slate-400 leading-relaxed cursor-pointer">
+              행사 안내, 대기 접수 변동 알림 및 사전 교육자료 수신을 위한 가상의 개인정보 수집 및 활용 방침에 동의합니다. *
+            </label>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <button type="submit" class="w-full bg-gradient-to-r from-dku-blue to-neon-purple hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 rounded-xl text-lg transition-all transform hover:scale-[1.01] hover:shadow-xl flex items-center justify-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            무료 사전 등록 신청 완료하기
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="bg-slate-950 border-t border-slate-900 text-slate-500 py-12 text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        
+        <!-- 푸터 로고 및 학과 정보 -->
+        <div class="text-center md:text-left space-y-2">
+          <div class="flex items-center justify-center md:justify-start space-x-2">
+            <span class="font-extrabold text-white text-lg tracking-tight">DKU AI Horizon 2026</span>
+          </div>
+          <p class="text-xs text-slate-400">
+            단국대학교 죽전캠퍼스 소프트웨어융합대학 인공지능공학과 주관 가상 워크샵 기획안
+          </p>
+          <p class="text-[11px] text-slate-600">
+            본 페이지는 단국대학교 AI 학술행사 시나리오를 바탕으로 제작된 가상의 랜딩페이지입니다.
+          </p>
+        </div>
+
+        <!-- 관련 소셜 링크 및 권리 -->
+        <div class="flex flex-col items-center md:items-end gap-3">
+          <div class="flex space-x-4">
+            <a href="#" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+            <a href="#" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+            <a href="#" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="globe" class="w-5 h-5"></i></a>
+          </div>
+          <span class="text-xs text-slate-600">© 2026 Dankook University AI Workspace. All rights reserved.</span>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- 알림/팝업 상자 (Alert 대체) -->
+  <div id="modal-success" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div class="bg-dku-card max-w-md w-full rounded-2xl p-8 border border-neon-cyan/50 shadow-2xl space-y-6 text-center transform scale-95 transition-all">
+      <div class="w-16 h-16 bg-neon-cyan/15 rounded-full flex items-center justify-center mx-auto text-neon-cyan">
+        <i data-lucide="party-popper" class="w-8 h-8"></i>
+      </div>
+      
+      <div class="space-y-2">
+        <h3 class="text-2xl font-extrabold text-white">등록이 완료되었습니다!</h3>
+        <p class="text-sm text-slate-400" id="success-message">
+          홍길동 님의 가상 사전 접수가 정상적으로 완료되었습니다. <br>
+          등록 이메일로 온라인 초대장 및 사전 질문지가 발송됩니다.
+        </p>
+      </div>
+
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left text-xs space-y-1">
+        <div class="flex justify-between"><span class="text-slate-400">장소:</span><span class="text-white font-bold">단국대학교 죽전캠퍼스 혜당관</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">일정:</span><span class="text-white font-bold">2026. 06. 26 (금) 09:30 AM</span></div>
+        <div class="flex justify-between"><span class="text-slate-400">선택트랙:</span><span class="text-neon-cyan font-bold" id="success-track">트랙 A (로우코드)</span></div>
+      </div>
+
+      <button onclick="closeModal()" class="w-full bg-neon-cyan text-slate-950 font-bold py-3.5 rounded-xl hover:bg-white transition-all">
+        확인했습니다
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Lucide Icons 초기화
+    lucide.createIcons();
+
+    // 모바일 메뉴 토글 로직
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // 아코디언 FAQ 토글 로직
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('i');
+      
+      if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        // 먼저 열려있는 아코디언 닫기 (선택 사항)
+        document.querySelectorAll('#faq div div').forEach(item => {
+          if (item !== content) item.style.maxHeight = null;
+        });
+        document.querySelectorAll('#faq button i').forEach(item => {
+          if (item !== icon) item.style.transform = 'rotate(0deg)';
+        });
+
+        content.style.maxHeight = content.scrollHeight + "px";
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // 가상의 라이브 신청자 수 카운팅 상승 효과
+    let currentCount = 428;
+    const counterEl = document.getElementById('live-counter');
+    
+    setInterval(() => {
+      // 5초~10초에 한 명씩 늘어나게 설정
+      const increase = Math.floor(Math.random() * 3) + 1; // 1명 ~ 3명
+      currentCount += increase;
+      if (counterEl) {
+        counterEl.textContent = `${currentCount}명`;
+      }
+    }, 6000);
+
+    // 폼 제출 핸들러 (Alert 비사용 요건 충족을 위해 커스텀 모달 사용)
+    function submitForm(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const trackA = document.getElementById('track-a').checked;
+      const trackName = trackA ? "트랙 A: 로우코드 실습" : "트랙 B: 딥러닝 응용 세션";
+
+      // 성공 모달 데이터 바인딩
+      document.getElementById('success-message').innerHTML = `
+        <strong class="text-white">${name}</strong> 님의 가상 사전 예약이 완료되었습니다.<br>
+        실제 서버에 전송되지는 않으며, 기획된 UI 확인용 모달입니다. <br>
+        <span class="text-slate-500 text-xs mt-2 block">${email}</span>
+      `;
+      document.getElementById('success-track').innerText = trackName;
+
+      // 모달 열기
+      const modal = document.getElementById('modal-success');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      // 실시간 카운터도 즉시 1명 보정
+      currentCount += 1;
+      counterEl.textContent = `${currentCount}명`;
+
+      // 폼 리셋
+      document.getElementById('apply-form').reset();
+    }
+
+    // 모달 닫기
+    function closeModal() {
+      const modal = document.getElementById('modal-success');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  </script>
+</body>
+</html>
