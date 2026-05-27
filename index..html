@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>벽돌 깨기 게임</title>
+    <style>
+        /* 기본 리셋 및 전체 배경 설정 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a2e; /* 어두운 남색 배경 */
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 스크롤 방지 */
+        }
+
+        /* 게임 컨테이너 */
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #16213e;
+        }
+
+        /* 캔버스 설정 */
+        canvas {
+            display: block;
+            background-color: #0f3460;
+        }
+
+        /* UI 오버레이 (게임 오버, 클리어 화면) */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* 숨김 클래스 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 텍스트 및 버튼 스타일 */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1a1a2e;
+            background-color: #e94560;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        button:hover {
+            background-color: #ff5c77;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+        }
+
+        /* 모바일 대응 (반응형) */
+        @media (max-width: 600px) {
+            canvas {
+                width: 100vw;
+                height: 66vw; /* 3:2 비율 유지 */
+            }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- 게임 화면을 그릴 캔버스. 해상도는 600x400으로 고정하고 CSS로 크기를 조절합니다. -->
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <!-- 게임 상태(시작/종료)를 보여주는 UI 오버레이 -->
+        <div id="ui-layer">
+            <h1 id="ui-title">벽돌 깨기</h1>
+            <p id="ui-subtitle">마우스나 터치로 패들을 움직이세요!</p>
+            <button id="start-btn">게임 시작</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        
+        // UI 요소들
+        const uiLayer = document.getElementById("ui-layer");
+        const uiTitle = document.getElementById("ui-title");
+        const uiSubtitle = document.getElementById("ui-subtitle");
+        const startBtn = document.getElementById("start-btn");
+
+        // --- 게임 변수 설정 ---
+        let score = 0;
+        let lives = 3;
+        let isGameOver = true;
+        let animationId;
+
+        // 공 속성
+        const ballRadius = 8;
+        let x, y, dx, dy;
+        const initialSpeed = 4;
+
+        // 패들 속성
+        const paddleHeight = 12;
+        const paddleWidth = 90;
+        let paddleX;
+        let rightPressed = false;
+        let leftPressed = false;
+
+        // 벽돌 속성
+        const brickRowCount = 5;
+        const brickColumnCount = 7;
+        const brickWidth = 70;
+        const brickHeight = 20;
+        const brickPadding = 10;
+        const brickOffsetTop = 40;
+        const brickOffsetLeft = 25;
+        
+        // 벽돌 배열 초기화
+        let bricks = [];
+
+        // --- 초기화 함수 ---
+        function initGame() {
+            score = 0;
+            lives = 3;
+            isGameOver = false;
+            initBricks();
+            resetBallAndPaddle();
+            
+            uiLayer.classList.add("hidden"); // UI 숨기기
+            draw(); // 게임 루프 시작
+        }
+
+        function initBricks() {
+            bricks = [];
+            for (let c = 0; c < brickColumnCount; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
+                }
+            }
+        }
+
+        function resetBallAndPaddle() {
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            // 공이 튀는 방향 랜덤화 (위로 향하되 좌우는 약간 무작위)
+            dx = (Math.random() > 0.5 ? 1 : -1) * initialSpeed;
+            dy = -initialSpeed;
+            paddleX = (canvas.width - paddleWidth) / 2;
+        }
+
+        function gameOver(isWin) {
+            isGameOver = true;
+            cancelAnimationFrame(animationId);
+            
+            uiLayer.classList.remove("hidden");
+            if (isWin) {
+                uiTitle.innerText = "클리어!";
+                uiTitle.style.color = "#00ffcc";
+                uiSubtitle.innerText = `최종 점수: ${score}`;
+            } else {
+                uiTitle.innerText = "게임 오버";
+                uiTitle.style.color = "#ff3366";
+                uiSubtitle.innerText = `최종 점수: ${score}`;
+            }
+            startBtn.innerText = "다시 하기";
+        }
+
+        // --- 이벤트 리스너 ---
+        // 버튼 클릭
+        startBtn.addEventListener("click", initGame);
+
+        // 키보드 입력
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+        });
+
+        document.addEventListener("keyup", (e) => {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+        });
+
+        // 마우스 이동
+        document.addEventListener("mousemove", (e) => {
+            if(isGameOver) return;
+            const relativeX = e.clientX - canvas.getBoundingClientRect().left;
+            // 캔버스 크기 비율에 맞춰 마우스 위치 조정 (반응형 대응)
+            const scaleX = canvas.width / canvas.getBoundingClientRect().width;
+            const adjustedX = relativeX * scaleX;
+
+            if (adjustedX > 0 && adjustedX < canvas.width) {
+                paddleX = adjustedX - paddleWidth / 2;
+            }
+        });
+
+        // 터치 이동 (모바일)
+        canvas.addEventListener("touchmove", (e) => {
+            if(isGameOver) return;
+            e.preventDefault(); // 스크롤 방지
+            const relativeX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+            const scaleX = canvas.width / canvas.getBoundingClientRect().width;
+            const adjustedX = relativeX * scaleX;
+
+            if (adjustedX > 0 && adjustedX < canvas.width) {
+                paddleX = adjustedX - paddleWidth / 2;
+            }
+        }, { passive: false });
+
+        // --- 그리기 로직 ---
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#e94560"; // 붉은 네온빛 공
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#e94560";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0; // 초기화
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            // 둥근 모서리 패들 (간단히 구현하기 위해 rect 사용 후 스타일링)
+            ctx.roundRect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight, 6);
+            ctx.fillStyle = "#00f2fe"; // 푸른색 패들
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#00f2fe";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawBricks() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    if (bricks[c][r].status === 1) {
+                        const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                        const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        
+                        ctx.beginPath();
+                        ctx.roundRect(brickX, brickY, brickWidth, brickHeight, 4);
+                        
+                        // 줄마다 다른 색상 적용
+                        const colors = ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93"];
+                        ctx.fillStyle = colors[r % colors.length];
+                        
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        function drawScore() {
+            ctx.font = "16px 'Segoe UI', Tahoma, sans-serif";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("점수: " + score, 15, 25);
+        }
+
+        function drawLives() {
+            ctx.font = "16px 'Segoe UI', Tahoma, sans-serif";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("생명: " + "❤️".repeat(lives), canvas.width - 90, 25);
+        }
+
+        // --- 충돌 감지 로직 ---
+        function collisionDetection() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if (b.status === 1) {
+                        // 공이 벽돌 영역 안에 있는지 확인
+                        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                            dy = -dy; // 방향 전환
+                            b.status = 0; // 벽돌 파괴
+                            score += 10;
+                            
+                            // 최고 점수 (모든 벽돌 파괴) 확인
+                            if (score === brickRowCount * brickColumnCount * 10) {
+                                gameOver(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- 메인 게임 루프 ---
+        function draw() {
+            if (isGameOver) return;
+
+            // 화면 지우기
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            drawScore();
+            drawLives();
+            collisionDetection();
+
+            // 왼쪽, 오른쪽 벽 충돌
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            
+            // 윗쪽 벽 충돌
+            if (y + dy < ballRadius) {
+                dy = -dy;
+            } 
+            // 아랫쪽 벽 충돌
+            else if (y + dy > canvas.height - ballRadius - 10) {
+                // 패들에 닿았는지 확인
+                if (x > paddleX - ballRadius && x < paddleX + paddleWidth + ballRadius && y + dy < canvas.height - 10) {
+                    // 패들의 어느 부위에 맞았는지에 따라 각도 변화 (약간의 물리 효과)
+                    let hitPoint = x - (paddleX + paddleWidth / 2);
+                    dx = hitPoint * 0.15; // 반사각 조절
+                    dy = -dy;
+                } else if (y + dy > canvas.height - ballRadius) { // 바닥에 닿음
+                    lives--;
+                    if (!lives) {
+                        gameOver(false);
+                        return; // 다음 프레임 예약 방지
+                    } else {
+                        resetBallAndPaddle();
+                    }
+                }
+            }
+
+            // 키보드 입력에 따른 패들 이동 처리
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += 7;
+            } else if (leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+
+            // 공 위치 업데이트
+            x += dx;
+            y += dy;
+
+            // 다음 프레임 요청
+            animationId = requestAnimationFrame(draw);
+        }
+
+        // 초기 화면 설정 (그리기만 하고 루프는 돌리지 않음)
+        initBricks();
+        resetBallAndPaddle();
+        drawBricks();
+        drawPaddle();
+
+    </script>
+</body>
+</html>
